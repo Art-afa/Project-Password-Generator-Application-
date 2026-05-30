@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     error = Color(0xFFBA1A1A),
                     background = Color.Black,
                     surface = Color.Black
-                    
+
                 )
             ) {
                 RegisterScreen()
