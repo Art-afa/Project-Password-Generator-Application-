@@ -23,27 +23,35 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-
-class MainActivity : ComponentActivity() {
+cclass MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme(
-                colorScheme = lightColorScheme(
+                colorScheme = darkColorScheme(
                     primary = Color(0xFF4CAF50),
-                    primaryContainer = Color(0xFFC8E6C9),
-                    error = Color(0xFFBA1A1A),
-                    background = Color.Black,
-                    surface = Color.Black
-
+                    background = Color.Black
                 )
             ) {
-                RegisterScreen()
+                AppNavigation()
             }
         }
     }
 }
 
+data class User(
+    val username: String,
+    val email: String,
+    val password: String,
+    val savedPasswords: MutableList<SavedPassword> = mutableListOf()
+)
+
+data class SavedPassword(
+    val id: String,
+    val name: String,
+    val password: String,
+    val date: String
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
