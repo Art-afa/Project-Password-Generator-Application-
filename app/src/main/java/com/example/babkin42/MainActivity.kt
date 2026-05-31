@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-cclass MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -52,6 +52,39 @@ data class SavedPassword(
     val password: String,
     val date: String
 )
+
+@Composable
+fun AppNavigation() {
+    val navController = rememberNavController()
+    var currentUser by remember { mutableStateOf<User?>(null) }
+
+    NavHost(navController = navController, startDestination = "login") {
+        composable("login") {
+            LoginScreen(navController) { user ->
+                currentUser = user
+                navController.navigate("generator")
+            }
+        }
+        composable("register") {
+            RegisterScreen(navController) { user ->
+                currentUser = user
+                navController.navigate("generator")
+            }
+        }
+        composable("generator") {
+            if (currentUser != null) {
+                GeneratorScreen(navController, currentUser!!) { updatedUser ->
+                    currentUser = updatedUser
+                }
+            }
+        }
+        composable("profile") {
+            if (currentUser != null) {
+                ProfileScreen(navController, currentUser!!)
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
