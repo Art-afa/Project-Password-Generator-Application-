@@ -86,6 +86,87 @@ fun AppNavigation() {
     }
 }
 
+@Composable
+fun LoginScreen(
+    navController: NavController,
+    onLoginSuccess: (User) -> Unit
+) {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    // Список зарегистрированных пользователей (в реальном приложении это было бы в БД)
+    var registeredUsers by remember { mutableStateOf(listOf<User>()) }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("🔐 Вход", fontSize = 32.sp, color = Color.White)
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text("Имя пользователя") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF4CAF50),
+                cursorColor = Color(0xFF4CAF50)
+            )
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Пароль") },
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color(0xFF4CAF50),
+                cursorColor = Color(0xFF4CAF50)
+            )
+        )
+
+        if (errorMessage != null) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(errorMessage!!, color = Color.Red, fontSize = 12.sp)
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = {
+                // Поиск пользователя
+                val user = registeredUsers.find { it.username == username && it.password == password }
+                if (user != null) {
+                    onLoginSuccess(user)
+                } else {
+                    errorMessage = "Неверное имя пользователя или пароль"
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+        ) {
+            Text("Войти", fontSize = 18.sp)
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        TextButton(onClick = { navController.navigate("register") }) {
+            Text("Нет аккаунта? Зарегистрироваться", color = Color.White)
+        }
+    }
+}
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen() {
