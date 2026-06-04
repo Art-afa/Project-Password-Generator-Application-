@@ -16,13 +16,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import java.util.Date
+import java.util.Locale
 
+
+private val Int.password: String
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -485,7 +495,12 @@ fun GeneratorScreen(
                             id = System.currentTimeMillis().toString(),
                             name = passwordName,
                             password = generatedPassword,
-                            date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())
+                            date = SimpleDateFormat(
+                                x0 = "dd.MM.yyyy HH:mm",
+                                x1 = Locale.getDefault()
+                            ).toString(
+                                Date()
+                            )
                         )
                         user.savedPasswords.add(newPassword)
                         onUserUpdate(user)
@@ -519,6 +534,13 @@ fun GeneratorScreen(
         }
     }
 }
+
+@Composable
+fun SimpleDateFormat(x0: String, x1: getDefault) {
+    TODO("Not yet implemented")
+}
+
+annotation class getDefault
 
 @Composable
 fun ProfileScreen(
