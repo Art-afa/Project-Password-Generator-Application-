@@ -519,3 +519,73 @@ fun GeneratorScreen(
     }
 }
 
+@Composable
+fun ProfileScreen(
+    navController: NavController,
+    user: User
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("👤 Профиль", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Информация о пользователе", color = Color(0xFF4CAF50), fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(12.dp))
+                Text("📝 Имя: ${user.username}", color = Color.White, fontSize = 16.sp)
+                Text("📧 Email: ${user.email}", color = Color.White, fontSize = 16.sp)
+                Text("🔐 Всего паролей: ${user.savedPasswords.size}", color = Color(0xFF4CAF50), fontSize = 14.sp)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("💾 История паролей", color = Color(0xFF4CAF50), fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (user.savedPasswords.isEmpty()) {
+                    Text("Нет сохраненных паролей", color = Color.Gray, modifier = Modifier.padding(16.dp))
+                } else {
+                    LazyColumn(modifier = Modifier.height(350.dp)) {
+                        items(user.savedPasswords.reversed()) { savedPassword ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color(0xFF2E2E2E))
+                            ) {
+                                Column(modifier = Modifier.padding(12.dp)) {
+                                    Text(savedPassword.name, color = Color(0xFF4CAF50), fontSize = 16.sp)
+                                    Text("Пароль: ${savedPassword.password}", color = Color.White, fontSize = 14.sp)
+                                    Text(savedPassword.date, color = Color.Gray, fontSize = 10.sp)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.navigate("generator") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+        ) {
+            Text("← Назад к генератору")
+        }
+    }
+}
+
