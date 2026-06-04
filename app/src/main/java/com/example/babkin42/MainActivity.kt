@@ -299,3 +299,164 @@ fun RegisterScreen(
         }
     }
 }
+
+@Composable
+fun GeneratorScreen(
+    navController: NavController,
+    user: User,
+    onUserUpdate: (User) -> Unit
+) {
+    var passwordLength by remember { mutableStateOf(12) }
+    var includeUppercase by remember { mutableStateOf(true) }
+    var includeLowercase by remember { mutableStateOf(true) }
+    var includeNumbers by remember { mutableStateOf(true) }
+    var includeSymbols by remember { mutableStateOf(true) }
+    var generatedPassword by remember { mutableStateOf("") }
+    var passwordName by remember { mutableStateOf("") }
+    var showSaveDialog by remember { mutableStateOf(false) }
+    var showSnackbar by remember { mutableStateOf(false) }
+    var snackbarMessage by remember { mutableStateOf("") }
+    val clipboardManager = LocalClipboardManager.current
+
+    fun generatePassword(): String {
+        val uppercase = "ABCDEFGHJKLMNPQRSTUVWXYZ"
+        val lowercase = "abcdefghijkmnpqrstuvwxyz"
+        val numbers = "23456789"
+        val symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+
+        var charSet = ""
+        if (includeUppercase) charSet += uppercase
+        if (includeLowercase) charSet += lowercase
+        if (includeNumbers) charSet += numbers
+        if (includeSymbols) charSet += symbols
+
+        if (charSet.isEmpty()) return "Выберите параметры"
+
+        return (1..passwordLength).map { charSet.random() }.joinToString("")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text("🔐 Генератор паролей", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        ) {
+            Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Сгенерированный пароль:", color = Color.White)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    if (generatedPassword.isNotEmpty()) generatedPassword else "Нажмите кнопку",
+                    fontSize = 20.sp,
+                    color = Color(0xFF4CAF50),
+                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Button(
+                        onClick = { generatedPassword = generatePassword() },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                    ) {
+                        Text("Сгенерировать")
+                    }
+                    Button(
+                        onClick = {
+                            if (generatedPassword.isNotEmpty()) {
+                                clipboardManager.setText(AnnotatedString(generatedPassword))
+                                snackbarMessage = "Пароль скопирован!"
+                                showSnackbar = true
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                    ) {
+                        Text("Копировать")
+                    }
+                }
+
+                if (generatedPassword.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { showSaveDialog = true },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                    ) {
+                        Text("💾 Сохранить пароль")
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Card(
+            modifier = Modifier.fillMaxWidth().padding(8.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Настройки пароля", color = Color.White, fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Text("Длина: $passwordLength", color = Color.White)
+                Slider(
+                    value = passwordLength.toFloat(),
+                    onValueChange = { passwordLength = it.toInt() },
+                    valueRange = 4f..32f,
+                    steps = 28,
+                    colors = SliderDefaults.colors(
+                        thumbColor = Color(0xFF4CAF50),
+                        activeTrackColor = Color(0xFF4CAF50)
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = includeUppercase, onCheckedChange = { includeUppercase = it })
+                        Text("A-Z", color = Color.White)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = includeLowercase, onCheckedChange = { includeLowercase = it })
+                        Text("a-z", color = Color.White)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = includeNumbers, onCheckedChange = { includeNumbers = it })
+                        Text("0-9", color = Color.White)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checked = includeSymbols, onCheckedChange = { includeSymbols = it })
+                        Text("!@#", color = Color.White)
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(
+                onClick = { navController.navigate("profile") },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
+            ) {
+                Text("👤 Профиль")
+            }
+            Button(
+                onClick = { navController.navigate("login") },
+                modifier = Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+            ) {
+                Text("🚪 Выйти")
+            }
+        }
+    }
