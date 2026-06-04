@@ -460,3 +460,47 @@ fun GeneratorScreen(
             }
         }
     }
+
+    if (showSaveDialog) {
+        AlertDialog(
+            onDismissRequest = { showSaveDialog = false },
+            title = { Text("Сохранить пароль") },
+            text = {
+                Column {
+                    Text("Введите название для пароля:")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = passwordName,
+                        onValueChange = { passwordName = it },
+                        placeholder = { Text("Например: ВКонтакте") },
+                        singleLine = true
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (passwordName.isNotBlank()) {
+                        val newPassword = SavedPassword(
+                            id = System.currentTimeMillis().toString(),
+                            name = passwordName,
+                            password = generatedPassword,
+                            date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())
+                        )
+                        user.savedPasswords.add(newPassword)
+                        onUserUpdate(user)
+                        passwordName = ""
+                        showSaveDialog = false
+                        snackbarMessage = "Пароль сохранен!"
+                        showSnackbar = true
+                    }
+                }) {
+                    Text("Сохранить", color = Color(0xFF4CAF50))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSaveDialog = false }) {
+                    Text("Отмена", color = Color.Red)
+                }
+            }
+        )
+    }
