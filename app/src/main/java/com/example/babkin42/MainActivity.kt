@@ -504,3 +504,18 @@ fun GeneratorScreen(
             }
         )
     }
+
+    if (showSnackbar) {
+        Snackbar(
+            modifier = Modifier.padding(16.dp),
+            action = {
+                TextButton(onClick = { showSnackbar = false }) {
+                    Text("OK", color = Color.White)
+                }
+            }
+        ) {
+            Text(snackbarMessage)
+        }
+    }
+}
+
