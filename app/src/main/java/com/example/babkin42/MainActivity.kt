@@ -7,6 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -31,8 +32,6 @@ import androidx.navigation.compose.rememberNavController
 import java.util.Date
 import java.util.Locale
 
-
-private val Int.password: String
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -499,7 +498,6 @@ fun GeneratorScreen(
                                 x0 = "dd.MM.yyyy HH:mm",
                                 x1 = Locale.getDefault()
                             ).toString(
-                                Date()
                             )
                         )
                         user.savedPasswords.add(newPassword)
@@ -534,6 +532,8 @@ fun GeneratorScreen(
         }
     }
 }
+
+fun SimpleDateFormat(x0: String, x1: Locale) {}
 
 @Composable
 fun SimpleDateFormat(x0: String, x1: getDefault) {
