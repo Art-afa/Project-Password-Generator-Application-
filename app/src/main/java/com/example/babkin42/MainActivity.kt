@@ -407,11 +407,10 @@ fun GeneratorScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp), // Уменьшил отступ снизу
+                    .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Кнопка "Выйти" - СЛЕВА
                 Button(
                     onClick = { navController.navigate("login") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
@@ -419,10 +418,8 @@ fun GeneratorScreen(
                     Text("Выйти")
                 }
 
-                // Пустое место для баланса
                 Spacer(modifier = Modifier.weight(1f))
 
-                // Кнопка "Профиль" - СПРАВА
                 Button(
                     onClick = { navController.navigate("profile") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
@@ -431,14 +428,15 @@ fun GeneratorScreen(
                 }
             }
 
-            // ===== ЗАГОЛОВОК "ГЕНЕРАТОР" =====
+            // ===== ЗАГОЛОВОК =====
             Text(
                 "Генератор паролей",
                 fontSize = 28.sp,
                 color = Color.White,
-                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp) // Отступ сверху и снизу
+                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
             )
 
+            // ===== ПАРОЛЬ (отображается) =====
             Card(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
@@ -454,37 +452,14 @@ fun GeneratorScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Button(
-                            onClick = { generatedPassword = generatePassword() },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-                        ) {
-                            Text("Сгенерировать")
-                        }
-                        Button(
-                            onClick = {
-                                if (generatedPassword.isNotEmpty()) {
-                                    clipboardManager.setText(AnnotatedString(generatedPassword))
-                                    snackbarMessage = "Пароль скопирован!"
-                                    showSnackbar = true
-                                }
-                            },
-                            modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
-                        ) {
-                            Text("Копировать")
-                        }
-                    }
-
+                    // Кнопка "Сохранить пароль" (появится после генерации)
                     if (generatedPassword.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = { showSaveDialog = true },
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
                         ) {
-                            Text("Сохранить пароль")
+                            Text("💾 Сохранить пароль")
                         }
                     }
                 }
@@ -492,6 +467,7 @@ fun GeneratorScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // ===== НАСТРОЙКИ ПАРОЛЯ =====
             Card(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
@@ -534,6 +510,36 @@ fun GeneratorScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // ===== КНОПКИ ВНИЗУ =====
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { generatedPassword = generatePassword() },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                ) {
+                    Text("Сгенерировать")
+                }
+
+                Button(
+                    onClick = {
+                        if (generatedPassword.isNotEmpty()) {
+                            clipboardManager.setText(AnnotatedString(generatedPassword))
+                            snackbarMessage = "Пароль скопирован!"
+                            showSnackbar = true
+                        }
+                    },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                ) {
+                    Text("Копировать")
+                }
+            }
         }
     }
 
@@ -548,7 +554,7 @@ fun GeneratorScreen(
                     OutlinedTextField(
                         value = passwordName,
                         onValueChange = { passwordName = it },
-                        placeholder = { Text("Например: ВКонтакте") },
+                        placeholder = { Text("Например: Егор") },
                         singleLine = true
                     )
                 }
