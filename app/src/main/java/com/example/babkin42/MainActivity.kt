@@ -400,7 +400,39 @@ fun GeneratorScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("🔐 Генератор паролей", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+            // ===== ВЕРХНИЙ РЯД С КНОПКАМИ =====
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Кнопка "Выйти" - СЛЕВА
+                Button(
+                    onClick = { navController.navigate("login") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                ) {
+                    Text("🚪 Выйти")
+                }
+
+                // Заголовок по центру (можно оставить или убрать)
+                Text(
+                    "🔐 Генератор",
+                    fontSize = 24.sp,
+                    color = Color.White,
+                    modifier = Modifier.weight(1f),
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+
+                // Кнопка "Профиль" - СПРАВА
+                Button(
+                    onClick = { navController.navigate("profile") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
+                ) {
+                    Text("👤 Профиль")
+                }
+            }
 
             Card(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
@@ -495,25 +527,6 @@ fun GeneratorScreen(
                             Text("!@#", color = Color.White)
                         }
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Button(
-                    onClick = { navController.navigate("profile") },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
-                ) {
-                    Text("👤 Профиль")
-                }
-                Button(
-                    onClick = { navController.navigate("login") },
-                    modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
-                ) {
-                    Text("🚪 Выйти")
                 }
             }
         }
