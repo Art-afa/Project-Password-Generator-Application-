@@ -5,16 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -640,20 +643,17 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            // ===== АВАТАРКА =====
-            Box(
+            // ===== АВАТАРКА ИЗ R.DRAWABLE =====
+            // ===== АВАТАРКА ИЗ R.DRAWABLE =====
+            Image(
+                painter = painterResource(id = R.drawable.ara43),
+                contentDescription = "Аватар пользователя",
                 modifier = Modifier
-                    .size(100.dp)
-                    .background(Color.Gray.copy(alpha = 0.3f), shape = androidx.compose.foundation.shape.CircleShape)
-                    .padding(2.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "👤",
-                    fontSize = 50.sp,
-                    color = Color.White
-                )
-            }
+                    .size(90.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, Color(0xFF4CAF50), CircleShape),
+                contentScale = ContentScale.Crop
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
