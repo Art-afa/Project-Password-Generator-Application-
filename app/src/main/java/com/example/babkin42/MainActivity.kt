@@ -130,7 +130,7 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("🔐 Вход", fontSize = 32.sp, color = Color.White)
+            Text("Вход", fontSize = 32.sp, color = Color.White)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -413,7 +413,7 @@ fun GeneratorScreen(
                     onClick = { navController.navigate("login") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
                 ) {
-                    Text("🚪 Выйти")
+                    Text("Выйти")
                 }
 
                 // Пустое место для баланса
@@ -424,13 +424,13 @@ fun GeneratorScreen(
                     onClick = { navController.navigate("profile") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
                 ) {
-                    Text("👤 Профиль")
+                    Text("👤Профиль")
                 }
             }
 
             // ===== ЗАГОЛОВОК "ГЕНЕРАТОР" =====
             Text(
-                "🔐 Генератор паролей",
+                "Генератор паролей",
                 fontSize = 28.sp,
                 color = Color.White,
                 modifier = Modifier.padding(top = 8.dp, bottom = 20.dp) // Отступ сверху и снизу
@@ -481,7 +481,7 @@ fun GeneratorScreen(
                             modifier = Modifier.fillMaxWidth(),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
                         ) {
-                            Text("💾 Сохранить пароль")
+                            Text("Сохранить пароль")
                         }
                     }
                 }
@@ -620,7 +620,33 @@ fun ProfileScreen(
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("👤 Профиль", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+            // ===== ВЕРХНИЙ РЯД С КНОПКОЙ НАЗАД =====
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Кнопка "Назад" - СЛЕВА
+                Button(
+                    onClick = { navController.navigate("generator") },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                ) {
+                    Text(" Назад")
+                }
+
+                // Пустое место для баланса
+                Spacer(modifier = Modifier.weight(1f))
+            }
+
+            // ===== ЗАГОЛОВОК "ПРОФИЛЬ" =====
+            Text(
+                "👤 Профиль",
+                fontSize = 28.sp,
+                color = Color.White,
+                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp) // Отступ сверху и снизу
+            )
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -666,15 +692,7 @@ fun ProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { navController.navigate("generator") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-            ) {
-                Text("← Назад к генератору")
-            }
+            // Убрал нижнюю кнопку "Назад к генератору", так как она теперь сверху
         }
     }
 }
