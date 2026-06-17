@@ -29,9 +29,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import java.util.Date
-import java.util.Locale
-
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +95,7 @@ fun AppNavigation() {
     }
 }
 
+// ==================== ЭКРАН ВХОДА С КАРТИНКОЙ ====================
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -105,78 +105,94 @@ fun LoginScreen(
     var password by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Список зарегистрированных пользователей (в реальном приложении это было бы в БД)
     var registeredUsers by remember { mutableStateOf(listOf<User>()) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("🔐 Вход", fontSize = 32.sp, color = Color.White)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Имя пользователя") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Фоновая картинка
+        Image(
+            painter = painterResource(id = R.drawable.ara1),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            )
+        // Затемнение фона для лучшей читаемости
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
         )
 
-        if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(errorMessage!!, color = Color.Red, fontSize = 12.sp)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                // Поиск пользователя
-                val user = registeredUsers.find { it.username == username && it.password == password }
-                if (user != null) {
-                    onLoginSuccess(user)
-                } else {
-                    errorMessage = "Неверное имя пользователя или пароль"
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Войти", fontSize = 18.sp)
-        }
+            Text("🔐 Вход", fontSize = 32.sp, color = Color.White)
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        TextButton(onClick = { navController.navigate("register") }) {
-            Text("Нет аккаунта? Зарегистрироваться", color = Color.White)
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Имя пользователя") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Пароль") },
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                )
+            )
+
+            if (errorMessage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(errorMessage!!, color = Color.Red, fontSize = 12.sp)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    val user = registeredUsers.find { it.username == username && it.password == password }
+                    if (user != null) {
+                        onLoginSuccess(user)
+                    } else {
+                        errorMessage = "Неверное имя пользователя или пароль"
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+            ) {
+                Text("Войти", fontSize = 18.sp)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextButton(onClick = { navController.navigate("register") }) {
+                Text("Нет аккаунта? Зарегистрироваться", color = Color.White)
+            }
         }
     }
 }
+
+// ==================== ЭКРАН РЕГИСТРАЦИИ С КАРТИНКОЙ ====================
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(
@@ -190,126 +206,142 @@ fun RegisterScreen(
     var isPasswordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
-    // Список зарегистрированных пользователей
     var registeredUsers by remember { mutableStateOf(listOf<User>()) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(32.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("📝 Регистрация", fontSize = 32.sp, color = Color.White)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
-            label = { Text("Имя пользователя") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            )
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Фоновая картинка
+        Image(
+            painter = painterResource(id = R.drawable.ara2),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            )
+        // Затемнение фона
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Пароль") },
-            visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            ),
-            trailingIcon = {
-                TextButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                    Text(if (isPasswordVisible) "🙈" else "👁️")
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            label = { Text("Подтвердите пароль") },
-            visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-            colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Color(0xFF4CAF50),
-                cursorColor = Color(0xFF4CAF50)
-            )
-        )
-
-        if (errorMessage != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(errorMessage!!, color = Color.Red, fontSize = 12.sp)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                errorMessage = when {
-                    username.isBlank() -> "Введите имя пользователя"
-                    email.isBlank() -> "Введите Email"
-                    !email.contains("@") -> "Email должен содержать @"
-                    password.isBlank() -> "Введите пароль"
-                    password.length < 6 -> "Пароль должен быть минимум 6 символов"
-                    password != confirmPassword -> "Пароли не совпадают"
-                    registeredUsers.any { it.username == username } -> "Пользователь уже существует"
-                    else -> null
-                }
-
-                if (errorMessage == null) {
-                    val newUser = User(username, email, password, mutableListOf())
-                    registeredUsers = registeredUsers + newUser
-                    onRegisterSuccess(newUser)
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Зарегистрироваться", fontSize = 18.sp)
-        }
+            Text("📝 Регистрация", fontSize = 32.sp, color = Color.White)
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        TextButton(onClick = { navController.navigate("login") }) {
-            Text("Уже есть аккаунт? Войти", color = Color.White)
+            OutlinedTextField(
+                value = username,
+                onValueChange = { username = it },
+                label = { Text("Имя пользователя") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                )
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Пароль") },
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                ),
+                trailingIcon = {
+                    TextButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                        Text(if (isPasswordVisible) "🙈" else "👁️")
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Подтвердите пароль") },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth(),
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedBorderColor = Color(0xFF4CAF50),
+                    cursorColor = Color(0xFF4CAF50)
+                )
+            )
+
+            if (errorMessage != null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(errorMessage!!, color = Color.Red, fontSize = 12.sp)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = {
+                    errorMessage = when {
+                        username.isBlank() -> "Введите имя пользователя"
+                        email.isBlank() -> "Введите Email"
+                        !email.contains("@") -> "Email должен содержать @"
+                        password.isBlank() -> "Введите пароль"
+                        password.length < 6 -> "Пароль должен быть минимум 6 символов"
+                        password != confirmPassword -> "Пароли не совпадают"
+                        registeredUsers.any { it.username == username } -> "Пользователь уже существует"
+                        else -> null
+                    }
+
+                    if (errorMessage == null) {
+                        val newUser = User(username, email, password, mutableListOf())
+                        registeredUsers = registeredUsers + newUser
+                        onRegisterSuccess(newUser)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+            ) {
+                Text("Зарегистрироваться", fontSize = 18.sp)
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            TextButton(onClick = { navController.navigate("login") }) {
+                Text("Уже есть аккаунт? Войти", color = Color.White)
+            }
         }
     }
 }
 
+// ==================== ЭКРАН ГЕНЕРАТОРА С КАРТИНКОЙ ====================
 @Composable
 fun GeneratorScreen(
     navController: NavController,
@@ -345,128 +377,144 @@ fun GeneratorScreen(
         return (1..passwordLength).map { charSet.random() }.joinToString("")
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("🔐 Генератор паролей", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Фоновая картинка
+        Image(
+            painter = painterResource(id = R.drawable.ara3),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
 
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        // Затемнение фона
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Сгенерированный пароль:", color = Color.White)
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    if (generatedPassword.isNotEmpty()) generatedPassword else "Нажмите кнопку",
-                    fontSize = 20.sp,
-                    color = Color(0xFF4CAF50),
-                    fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
-                )
-                Spacer(modifier = Modifier.height(8.dp))
+            Text("🔐 Генератор паролей", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Button(
-                        onClick = { generatedPassword = generatePassword() },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-                    ) {
-                        Text("Сгенерировать")
-                    }
-                    Button(
-                        onClick = {
-                            if (generatedPassword.isNotEmpty()) {
-                                clipboardManager.setText(AnnotatedString(generatedPassword))
-                                snackbarMessage = "Пароль скопирован!"
-                                showSnackbar = true
-                            }
-                        },
-                        modifier = Modifier.weight(1f),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
-                    ) {
-                        Text("Копировать")
-                    }
-                }
-
-                if (generatedPassword.isNotEmpty()) {
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Сгенерированный пароль:", color = Color.White)
                     Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = { showSaveDialog = true },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
-                    ) {
-                        Text("💾 Сохранить пароль")
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth().padding(8.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Настройки пароля", color = Color.White, fontSize = 18.sp)
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text("Длина: $passwordLength", color = Color.White)
-                Slider(
-                    value = passwordLength.toFloat(),
-                    onValueChange = { passwordLength = it.toInt() },
-                    valueRange = 4f..32f,
-                    steps = 28,
-                    colors = SliderDefaults.colors(
-                        thumbColor = Color(0xFF4CAF50),
-                        activeTrackColor = Color(0xFF4CAF50)
+                    Text(
+                        if (generatedPassword.isNotEmpty()) generatedPassword else "Нажмите кнопку",
+                        fontSize = 20.sp,
+                        color = Color(0xFF4CAF50),
+                        fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace
                     )
-                )
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Button(
+                            onClick = { generatedPassword = generatePassword() },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+                        ) {
+                            Text("Сгенерировать")
+                        }
+                        Button(
+                            onClick = {
+                                if (generatedPassword.isNotEmpty()) {
+                                    clipboardManager.setText(AnnotatedString(generatedPassword))
+                                    snackbarMessage = "Пароль скопирован!"
+                                    showSnackbar = true
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3))
+                        ) {
+                            Text("Копировать")
+                        }
+                    }
 
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = includeUppercase, onCheckedChange = { includeUppercase = it })
-                        Text("A-Z", color = Color.White)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = includeLowercase, onCheckedChange = { includeLowercase = it })
-                        Text("a-z", color = Color.White)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = includeNumbers, onCheckedChange = { includeNumbers = it })
-                        Text("0-9", color = Color.White)
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(checked = includeSymbols, onCheckedChange = { includeSymbols = it })
-                        Text("!@#", color = Color.White)
+                    if (generatedPassword.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = { showSaveDialog = true },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
+                        ) {
+                            Text("💾 Сохранить пароль")
+                        }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Button(
-                onClick = { navController.navigate("profile") },
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
+            Card(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
             ) {
-                Text("👤 Профиль")
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Настройки пароля", color = Color.White, fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Text("Длина: $passwordLength", color = Color.White)
+                    Slider(
+                        value = passwordLength.toFloat(),
+                        onValueChange = { passwordLength = it.toInt() },
+                        valueRange = 4f..32f,
+                        steps = 28,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0xFF4CAF50),
+                            activeTrackColor = Color(0xFF4CAF50)
+                        )
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = includeUppercase, onCheckedChange = { includeUppercase = it })
+                            Text("A-Z", color = Color.White)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = includeLowercase, onCheckedChange = { includeLowercase = it })
+                            Text("a-z", color = Color.White)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = includeNumbers, onCheckedChange = { includeNumbers = it })
+                            Text("0-9", color = Color.White)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checked = includeSymbols, onCheckedChange = { includeSymbols = it })
+                            Text("!@#", color = Color.White)
+                        }
+                    }
+                }
             }
-            Button(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.weight(1f),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
-            ) {
-                Text("🚪 Выйти")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(
+                    onClick = { navController.navigate("profile") },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF9C27B0))
+                ) {
+                    Text("👤 Профиль")
+                }
+                Button(
+                    onClick = { navController.navigate("login") },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336))
+                ) {
+                    Text("🚪 Выйти")
+                }
             }
         }
     }
@@ -494,11 +542,7 @@ fun GeneratorScreen(
                             id = System.currentTimeMillis().toString(),
                             name = passwordName,
                             password = generatedPassword,
-                            date = SimpleDateFormat(
-                                x0 = "dd.MM.yyyy HH:mm",
-                                x1 = Locale.getDefault()
-                            ).toString(
-                            )
+                            date = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date())
                         )
                         user.savedPasswords.add(newPassword)
                         onUserUpdate(user)
@@ -533,82 +577,89 @@ fun GeneratorScreen(
     }
 }
 
-fun SimpleDateFormat(x0: String, x1: Locale) {}
-
-@Composable
-fun SimpleDateFormat(x0: String, x1: getDefault) {
-    TODO("Not yet implemented")
-}
-
-annotation class getDefault
-
+// ==================== ЭКРАН ПРОФИЛЯ С КАРТИНКОЙ ====================
 @Composable
 fun ProfileScreen(
     navController: NavController,
     user: User
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("👤 Профиль", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Фоновая картинка
+        Image(
+            painter = painterResource(id = R.drawable.ara4),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+        // Затемнение фона
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("Информация о пользователе", color = Color(0xFF4CAF50), fontSize = 18.sp)
-                Spacer(modifier = Modifier.height(12.dp))
-                Text("📝 Имя: ${user.username}", color = Color.White, fontSize = 16.sp)
-                Text("📧 Email: ${user.email}", color = Color.White, fontSize = 16.sp)
-                Text("🔐 Всего паролей: ${user.savedPasswords.size}", color = Color(0xFF4CAF50), fontSize = 14.sp)
+            Text("👤 Профиль", fontSize = 28.sp, color = Color.White, modifier = Modifier.padding(bottom = 20.dp))
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("Информация о пользователе", color = Color(0xFF4CAF50), fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text("📝 Имя: ${user.username}", color = Color.White, fontSize = 16.sp)
+                    Text("📧 Email: ${user.email}", color = Color.White, fontSize = 16.sp)
+                    Text("🔐 Всего паролей: ${user.savedPasswords.size}", color = Color(0xFF4CAF50), fontSize = 14.sp)
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("💾 История паролей", color = Color(0xFF4CAF50), fontSize = 18.sp)
-                Spacer(modifier = Modifier.height(8.dp))
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E).copy(alpha = 0.85f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text("💾 История паролей", color = Color(0xFF4CAF50), fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                if (user.savedPasswords.isEmpty()) {
-                    Text("Нет сохраненных паролей", color = Color.Gray, modifier = Modifier.padding(16.dp))
-                } else {
-                    LazyColumn(modifier = Modifier.height(350.dp)) {
-                        items(user.savedPasswords.reversed()) { savedPassword ->
-                            Card(
-                                modifier = Modifier.fillMaxWidth().padding(4.dp),
-                                colors = CardDefaults.cardColors(containerColor = Color(0xFF2E2E2E))
-                            ) {
-                                Column(modifier = Modifier.padding(12.dp)) {
-                                    Text(savedPassword.name, color = Color(0xFF4CAF50), fontSize = 16.sp)
-                                    Text("Пароль: ${savedPassword.password}", color = Color.White, fontSize = 14.sp)
-                                    Text(savedPassword.date, color = Color.Gray, fontSize = 10.sp)
+                    if (user.savedPasswords.isEmpty()) {
+                        Text("Нет сохраненных паролей", color = Color.Gray, modifier = Modifier.padding(16.dp))
+                    } else {
+                        LazyColumn(modifier = Modifier.height(350.dp)) {
+                            items(user.savedPasswords.reversed()) { savedPassword ->
+                                Card(
+                                    modifier = Modifier.fillMaxWidth().padding(4.dp),
+                                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2E2E2E).copy(alpha = 0.9f))
+                                ) {
+                                    Column(modifier = Modifier.padding(12.dp)) {
+                                        Text(savedPassword.name, color = Color(0xFF4CAF50), fontSize = 16.sp)
+                                        Text("Пароль: ${savedPassword.password}", color = Color.White, fontSize = 14.sp)
+                                        Text(savedPassword.date, color = Color.Gray, fontSize = 10.sp)
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { navController.navigate("generator") },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
-        ) {
-            Text("← Назад к генератору")
+            Button(
+                onClick = { navController.navigate("generator") },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
+            ) {
+                Text("← Назад к генератору")
+            }
         }
     }
 }
-
