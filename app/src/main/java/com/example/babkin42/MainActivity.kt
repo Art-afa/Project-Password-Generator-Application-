@@ -232,7 +232,7 @@ fun RegisterScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text("📝 Регистрация", fontSize = 32.sp, color = Color.White)
+            Text("Регистрация", fontSize = 32.sp, color = Color.White)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -633,19 +633,46 @@ fun ProfileScreen(
                     onClick = { navController.navigate("generator") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
                 ) {
-                    Text(" Назад")
+                    Text("← Назад")
                 }
 
                 // Пустое место для баланса
                 Spacer(modifier = Modifier.weight(1f))
             }
 
+            // ===== АВАТАРКА =====
+            Box(
+                modifier = Modifier
+                    .size(100.dp)
+                    .background(Color.Gray.copy(alpha = 0.3f), shape = androidx.compose.foundation.shape.CircleShape)
+                    .padding(2.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "👤",
+                    fontSize = 50.sp,
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // ===== ИМЯ ПОЛЬЗОВАТЕЛЯ ПОД АВАТАРКОЙ =====
+            Text(
+                text = user.username,
+                fontSize = 20.sp,
+                color = Color.White,
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             // ===== ЗАГОЛОВОК "ПРОФИЛЬ" =====
             Text(
-                "👤 Профиль",
+                "Профиль",
                 fontSize = 28.sp,
                 color = Color.White,
-                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp) // Отступ сверху и снизу
+                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp)
             )
 
             Card(
@@ -691,8 +718,6 @@ fun ProfileScreen(
                     }
                 }
             }
-
-            // Убрал нижнюю кнопку "Назад к генератору", так как она теперь сверху
         }
     }
 }
