@@ -404,7 +404,7 @@ fun GeneratorScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 20.dp),
+                    .padding(bottom = 8.dp), // Уменьшил отступ снизу
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -416,14 +416,8 @@ fun GeneratorScreen(
                     Text("🚪 Выйти")
                 }
 
-                // Заголовок по центру (можно оставить или убрать)
-                Text(
-                    "🔐 Генератор",
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    modifier = Modifier.weight(1f),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
+                // Пустое место для баланса
+                Spacer(modifier = Modifier.weight(1f))
 
                 // Кнопка "Профиль" - СПРАВА
                 Button(
@@ -433,6 +427,14 @@ fun GeneratorScreen(
                     Text("👤 Профиль")
                 }
             }
+
+            // ===== ЗАГОЛОВОК "ГЕНЕРАТОР" =====
+            Text(
+                "🔐 Генератор паролей",
+                fontSize = 28.sp,
+                color = Color.White,
+                modifier = Modifier.padding(top = 8.dp, bottom = 20.dp) // Отступ сверху и снизу
+            )
 
             Card(
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
