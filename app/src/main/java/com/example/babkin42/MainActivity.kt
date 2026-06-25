@@ -608,6 +608,10 @@ fun ProfileScreen(
     navController: NavController,
     user: User
 ) {
+    val clipboardManager = LocalClipboardManager.current
+    var snackbarMessage by remember { mutableStateOf("") }
+    var showSnackbar by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Фоновая картинка
         Image(
@@ -638,7 +642,6 @@ fun ProfileScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Кнопка "Назад" - СЛЕВА
                 Button(
                     onClick = { navController.navigate("generator") },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50))
@@ -646,12 +649,10 @@ fun ProfileScreen(
                     Text("← Назад")
                 }
 
-                // Пустое место для баланса
                 Spacer(modifier = Modifier.weight(1f))
             }
 
-            // ===== АВАТАРКА ИЗ R.DRAWABLE =====
-            // ===== АВАТАРКА ИЗ R.DRAWABLE =====
+            // ===== АВАТАРКА =====
             Image(
                 painter = painterResource(id = R.drawable.ara43),
                 contentDescription = "Аватар пользователя",
@@ -664,7 +665,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // ===== ИМЯ ПОЛЬЗОВАТЕЛЯ ПОД АВАТАРКОЙ =====
             Text(
                 text = user.username,
                 fontSize = 20.sp,
@@ -674,7 +674,6 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ===== ЗАГОЛОВОК "ПРОФИЛЬ" =====
             Text(
                 "Профиль",
                 fontSize = 28.sp,
@@ -714,10 +713,41 @@ fun ProfileScreen(
                                     modifier = Modifier.fillMaxWidth().padding(4.dp),
                                     colors = CardDefaults.cardColors(containerColor = Color(0xFF2E2E2E).copy(alpha = 0.9f))
                                 ) {
-                                    Column(modifier = Modifier.padding(12.dp)) {
-                                        Text(savedPassword.name, color = Color(0xFF4CAF50), fontSize = 16.sp)
-                                        Text("Пароль: ${savedPassword.password}", color = Color.White, fontSize = 14.sp)
-                                        Text(savedPassword.date, color = Color.Gray, fontSize = 10.sp)
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                savedPassword.name,
+                                                color = Color(0xFF4CAF50),
+                                                fontSize = 16.sp
+                                            )
+                                            Text(
+                                                "Пароль: ${savedPassword.password}",
+                                                color = Color.White,
+                                                fontSize = 14.sp
+                                            )
+                                            Text(
+                                                savedPassword.date,
+                                                color = Color.Gray,
+                                                fontSize = 10.sp
+                                            )
+                                        }
+
+                                        // ===== ТЕКСТОВАЯ КНОПКА "КОПИРОВАТЬ" =====
+                                        TextButton(
+                                            onClick = {
+                                                clipboardManager.setText(AnnotatedString(savedPassword.password))
+                                                snackbarMessage = "Пароль скопирован!"
+                                                showSnackbar = true
+                                            }
+                                        ) {
+                                            Text("📋 Копировать", fontSize = 12.sp, color = Color(0xFF4CAF50))
+                                        }
                                     }
                                 }
                             }
@@ -725,6 +755,20 @@ fun ProfileScreen(
                     }
                 }
             }
+        }
+    }
+
+    // ===== SNACKBAR ДЛЯ УВЕДОМЛЕНИЯ =====
+    if (showSnackbar) {
+        Snackbar(
+            modifier = Modifier.padding(16.dp),
+            action = {
+                TextButton(onClick = { showSnackbar = false }) {
+                    Text("OK", color = Color.White)
+                }
+            }
+        ) {
+            Text(snackbarMessage)
         }
     }
 }
