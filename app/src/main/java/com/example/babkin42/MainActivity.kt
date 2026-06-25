@@ -651,6 +651,7 @@ fun ProfileScreen(
                                                 showSnackbar = true
                                             }
                                         ) {
+
                                             Text(" Копировать", fontSize = 12.sp, color = Color(0xFF4CAF50))
                                         }
                                     }
