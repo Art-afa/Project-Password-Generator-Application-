@@ -448,7 +448,7 @@ fun GeneratorScreen(
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(checked = includeSymbols, onCheckedChange = { includeSymbols = it })
-                            Text("!@#", color = Color.White)
+                            Text("!#", color = Color.White)
                         }
                     }
                 }
